@@ -1,9 +1,9 @@
 import { MINIMUM_MEMBERSHIP_FEE } from "./helpers/constants";
-import { calcVat } from "./helpers/utils";
+import { calcVat, poundsToPence } from "./helpers/utils";
 import { validateRentAmount } from "./helpers/validations";
 import { BranchUnit, AreaUnit, DivisionUnit, OrganisationUnit } from "./types/organisation.types";
 import { RentPeriod, RentPeriodEnum } from "./types/rent.types";
-import { Pound } from "./types/shared.types";
+import { Pound, MembershipFee } from "./types/shared.types";
 
 /**
  * Function to calculate membership fee.
@@ -12,7 +12,7 @@ import { Pound } from "./types/shared.types";
  * @param organisationUnit  - Branch
  * @returns 
  */
-export function calculateMembershipFee(rentAmount: Pound, rentPeriod: RentPeriod, organisationUnit: OrganisationUnit): Pound {
+export function calculateMembershipFee(rentAmount: Pound, rentPeriod: RentPeriod, organisationUnit: OrganisationUnit): MembershipFee {
   // Membership fee calculation
   //// check if org structure has fixed fee
   const fixedUnitFee = organisationUnit.getFixedMembershipFee()
@@ -64,9 +64,14 @@ export function calculateMembershipFee(rentAmount: Pound, rentPeriod: RentPeriod
   let run6 = calculateMembershipFee(110, RentPeriodEnum.Week, branchUnit2);
   console.log("6: Should return minimum amount £120 + VAT ->", run6);
 
+  let run7 = poundsToPence(run6)
+  console.log("7: Should return minimum amount £120 + VAT in pence ->", run7);
+
   try {
-    let run7 = calculateMembershipFee(Number.MAX_SAFE_INTEGER, RentPeriodEnum.Week, branchUnit2); // will throw
+    calculateMembershipFee(Number.MAX_SAFE_INTEGER, RentPeriodEnum.Week, branchUnit2); // will throw
   } catch (error) {
-    console.log("7: Should throw RangeError --> ", String(error));
+    console.log("8: Should throw RangeError -> ", String(error));
   }
+
+
 })();
