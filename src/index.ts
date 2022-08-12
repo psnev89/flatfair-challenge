@@ -1,7 +1,7 @@
 import { MINIMUM_MEMBERSHIP_FEE } from "./helpers/constants";
 import { calcVat } from "./helpers/utils";
 import { validateRentAmount } from "./helpers/validations";
-import { CompositeOrganisationUnit, OrganisationUnit, OrganisationStructureTypeEnum, SingleOrganisationUnit } from "./types/organisation.types";
+import { BranchUnit, AreaUnit, DivisionUnit, OrganisationUnit } from "./types/organisation.types";
 import { RentPeriod, RentPeriodEnum } from "./types/rent.types";
 import { Pound } from "./types/shared.types";
 
@@ -32,12 +32,12 @@ export function calculateMembershipFee(rentAmount: Pound, rentPeriod: RentPeriod
 
 // example of app running
 (function init() {
-  const divisionUnit1 = new CompositeOrganisationUnit("Division Unit #1", OrganisationStructureTypeEnum.Division, true, 400);
-  const divisionUnit2 = new CompositeOrganisationUnit("Division Unit #2", OrganisationStructureTypeEnum.Division, false, 400);
-  const areaUnit1 = new CompositeOrganisationUnit("Area Unit #1", OrganisationStructureTypeEnum.Area, true, 500);
-  const areaUnit2 = new CompositeOrganisationUnit("Area Unit #2", OrganisationStructureTypeEnum.Area, false);
-  const branchUnit1 = new SingleOrganisationUnit("Branch Unit #1", OrganisationStructureTypeEnum.Branch, true, 650);
-  const branchUnit2 = new SingleOrganisationUnit("Branch Unit #2", OrganisationStructureTypeEnum.Branch, false, 650);
+  const divisionUnit1 = new DivisionUnit("Division Unit #1", true, 400);
+  const divisionUnit2 = new DivisionUnit("Division Unit #2", false, 400);
+  const areaUnit1 = new AreaUnit("Area Unit #1", true, 500);
+  const areaUnit2 = new AreaUnit("Area Unit #2", false);
+  const branchUnit1 = new BranchUnit("Branch Unit #1", true, 650);
+  const branchUnit2 = new BranchUnit("Branch Unit #2", false, 650);
 
   divisionUnit1.addUnit(areaUnit1);
   areaUnit1.addUnit(branchUnit1);
