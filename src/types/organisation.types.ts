@@ -1,35 +1,65 @@
-import { Pence, Pound } from "./shared.types";
+import { Pound } from "./shared.types";
 
-interface IOrganisationUnitConfig {
+export const enum OrganisationStructureTypeEnum {
+  Branch = "branch",
+  Area = "area",
+  Division = "division",
+  // Client ?
+}
+
+type OrganisationStructureType = `${OrganisationStructureTypeEnum}`;
+type OrganisationUnitConfig = {
   hasFixedMembershipFee: boolean,
-  fixedMembershipFeeAmount: number
+  fixedMembershipFeeAmount: Pound
 }
 
-class OrganisationUnitConfig implements IOrganisationUnitConfig {
-  hasFixedMembershipFee: boolean;
-  fixedMembershipFeeAmount: Pound;
+export abstract class OrganisationUnit {
+  protected belongsTo!: OrganisationUnit | null;
+  protected config: OrganisationUnitConfig;
+  protected structureType: OrganisationStructureType;
+  public name: string;
 
-  constructor(fixedMembershipFeeAmount: Pound = 0, hasFixedMembershipFee: boolean = true) {
-    this.hasFixedMembershipFee = hasFixedMembershipFee;
-    this.fixedMembershipFeeAmount = fixedMembershipFeeAmount;
-  }
-}
-
-interface IOrganisationUnit {
-  name: string,
-  config: IOrganisationUnitConfig
-}
-
-export class OrganisationUnit implements IOrganisationUnit {
-  name: string;
-  config: OrganisationUnitConfig;
-
-  constructor(name: string, fixedMembershipFeeAmount: Pound) {
+  constructor(name: string, structureType: OrganisationStructureType, hasFixedFee: boolean, fixedFeeAmount: Pound = 0) {
     this.name = name;
-    this.config = new OrganisationUnitConfig(fixedMembershipFeeAmount);
+    this.structureType = structureType;
+    this.config = {
+      hasFixedMembershipFee: hasFixedFee,
+      fixedMembershipFeeAmount: fixedFeeAmount
+    }
   }
 
-  toggleFixedMembershipFee() {
-    this.config.hasFixedMembershipFee = !this.config.hasFixedMembershipFee;
+  public getBelongedUnit(): OrganisationUnit | null {
+    return this.belongsTo;
+  }
+  public detachBelongedUnit(): void {
+    this.belongsTo = null;
+  }
+  public attachBelongedUnit(unit: OrganisationUnit): void {
+    this.belongsTo = unit;
+  }
+  public getFixedMembershipFee(): Pound | null {
+    if (this.config.hasFixedMembershipFee) return this.config.fixedMembershipFeeAmount;
+    return this.belongsTo?.getFixedMembershipFee?.() ?? null;
+  }
+}
+
+export class SingleOrganisationUnit extends OrganisationUnit {
+  public getFixedMembershipFee(): Pound | null {
+    if (this.config.hasFixedMembershipFee) return this.config.fixedMembershipFeeAmount;
+    return this.belongsTo?.getFixedMembershipFee?.() ?? null;
+  }
+}
+
+export class CompositeOrganisationUnit extends OrganisationUnit {
+  protected units: OrganisationUnit[] = [];
+
+  public addUnit(unit: OrganisationUnit): void {
+    this.units.push(unit);
+    unit.attachBelongedUnit(this);
+  }
+  public removeUnit(unit: OrganisationUnit): void {
+    const indexToRemove = this.units.indexOf(unit);
+    this.units.splice(indexToRemove, 1);
+    unit.detachBelongedUnit();
   }
 }
