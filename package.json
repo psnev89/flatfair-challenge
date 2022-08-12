@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "start": "tsc src/index.ts && node src/index.js",
+    "start": "tsc && node dist/index.js",
     "test": "npx jest",
     "tdd": "npx jest --watch"
   },
