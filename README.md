@@ -27,3 +27,12 @@ To compile and run app:
 $ npm run start
 # it will compile to src/ folder
 ```
+
+## Business rules
+
+BR1: rent amount should be between 1 - int.max
+BR2: rent period should be one of ["month", "week"]
+BR3: calculate membership fee function should throw or return error when rent amount is invalid
+BR3.1: allowed rent amount for week rent period should be [25£ ~ 2000£]
+BR3.2: allowed rent amount for month rent period should be [110£ ~ 8660£]
+BR4: monetary amounts are stored in pence
