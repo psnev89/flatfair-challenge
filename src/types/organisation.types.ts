@@ -5,6 +5,14 @@
 
 import { Pound } from "./shared.types";
 
+const enum OrganisationUnitTypeEnum {
+  Branch = "branch",
+  Area = "area",
+  Division = "division"
+  // Client?
+}
+type OrganisationUnitType = `${OrganisationUnitTypeEnum}`;
+
 type OrganisationUnitConfig = {
   hasFixedMembershipFee: boolean,
   fixedMembershipFeeAmount: Pound
@@ -13,6 +21,7 @@ type OrganisationUnitConfig = {
 export abstract class OrganisationUnit {
   protected belongsTo!: OrganisationUnit | null;
   protected config: OrganisationUnitConfig;
+  protected abstract unitType: OrganisationUnitType;
   public name: string;
 
   constructor(name: string, hasFixedFee: boolean, fixedFeeAmount: Pound = 0) {
@@ -40,6 +49,8 @@ export abstract class OrganisationUnit {
 }
 
 export class BranchUnit extends OrganisationUnit {
+  protected unitType: OrganisationUnitType = OrganisationUnitTypeEnum.Branch;
+
   public attachBelongedUnit(unit: AreaUnit): void {
     this.belongsTo = unit;
   }
@@ -47,6 +58,7 @@ export class BranchUnit extends OrganisationUnit {
 
 export class AreaUnit extends OrganisationUnit {
   protected units: BranchUnit[] = [];
+  protected unitType: OrganisationUnitType = OrganisationUnitTypeEnum.Area;
 
   public attachBelongedUnit(unit: DivisionUnit): void {
     this.belongsTo = unit;
@@ -66,6 +78,7 @@ export class AreaUnit extends OrganisationUnit {
 
 export class DivisionUnit extends OrganisationUnit {
   protected units: AreaUnit[] = [];
+  protected unitType: OrganisationUnitType = OrganisationUnitTypeEnum.Division;
 
   public attachBelongedUnit(): void {
     throw new TypeError("Division unit does not have a parent unit");
