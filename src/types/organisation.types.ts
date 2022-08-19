@@ -3,7 +3,7 @@
  * Could have done Composite the default way (abstract class, composite class and leaf class) but for scalable and SOC reasons, decided to split into different structure types (branch | area | division)
  */
 
-import { Pound } from "./shared.types";
+import { Pence } from "./shared.types";
 
 const enum OrganisationUnitTypeEnum {
   Branch = "branch",
@@ -15,7 +15,7 @@ type OrganisationUnitType = `${OrganisationUnitTypeEnum}`;
 
 type OrganisationUnitConfig = {
   hasFixedMembershipFee: boolean,
-  fixedMembershipFeeAmount: Pound
+  fixedMembershipFeeAmount: Pence
 }
 
 export abstract class OrganisationUnit {
@@ -24,7 +24,7 @@ export abstract class OrganisationUnit {
   protected abstract unitType: OrganisationUnitType;
   public name: string;
 
-  constructor(name: string, hasFixedFee: boolean, fixedFeeAmount: Pound = 0) {
+  constructor(name: string, hasFixedFee: boolean, fixedFeeAmount: Pence = 0) {
     this.name = name;
     this.config = {
       hasFixedMembershipFee: hasFixedFee,
@@ -42,7 +42,7 @@ export abstract class OrganisationUnit {
 
   abstract attachBelongedUnit(unit: OrganisationUnit): void
 
-  public getFixedMembershipFee(): Pound | null {
+  public getFixedMembershipFee(): Pence | null {
     if (this.config.hasFixedMembershipFee) return this.config.fixedMembershipFeeAmount;
     return this.belongsTo?.getFixedMembershipFee?.() ?? null;
   }
