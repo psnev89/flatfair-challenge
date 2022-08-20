@@ -65,6 +65,6 @@ export function isNumberBetween(value: number, min: number, max: number): boolea
  * @param vat - VAT to be applied
  * @returns {Pound|Pence} - Returns VAT value
  */
-export function calcVat(amount: Pound | Pence, vat: number = VAT): Pound | Pence {
+export function calcVat(amount: number, vat: number = VAT): number {
   return amount * vat;
 }
