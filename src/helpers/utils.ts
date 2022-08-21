@@ -69,8 +69,18 @@ export function isNumberBetween(value: number, min: number, max: number): boolea
  * Helper function to get the VAT value of a given amount
  * @param amount - amount to get the VAT from
  * @param vat - VAT to be applied
- * @returns {Pound|Pence} - Returns VAT value
+ * @returns {number} - Returns VAT value
  */
 export function calcVat(amount: number, vat: number = VAT): number {
 	return amount * vat;
 }
+
+/**
+ * Helper function to get the VAT value of a given amount
+ * @param amount - amount to get the VAT from
+ * @param vat - VAT to be applied
+ * @returns {number} - Returns VAT value
+ */
+export function getDaysOfMonth(month: number, year: number) {
+
+} 
