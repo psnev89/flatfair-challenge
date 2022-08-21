@@ -62,6 +62,7 @@ describe("HELPER UTILS :: getDaysOfMonth", () => {
 		expect(getDaysOfMonth(0)).toBe(31);
 		expect(getDaysOfMonth(1)).toBe(28);
 		expect(getDaysOfMonth(1, 2020)).toBe(29);
+		expect(getDaysOfMonth(11)).toBe(31);
 	});
 	test("should throw on invalid input", () => {
 		const throwable = () => {
