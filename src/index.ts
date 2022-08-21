@@ -1,3 +1,4 @@
+import { useCalcWeekAmountOfMonth } from "./composables/useCalcWeekAmountOfMonth";
 import { MINIMUM_MEMBERSHIP_FEE } from "./helpers/constants";
 import { calcVat, poundsToPence } from "./helpers/utils";
 import { validateRentAmount } from "./helpers/validations";
@@ -26,12 +27,12 @@ export function calculateMembershipFee(
 	if (error) throw new RangeError(error); // Throw if invalid (BR3)
 
 	/// / Membership fee is equal to one week of rent + VAT
-	// assuming a month has 4 weeks
-	const divider = rentPeriod === RentPeriodEnum.Month ? 4 : 1;
+	// use composable to get weekly fee if rent period is "month"
+	const amount = rentPeriod === RentPeriodEnum.Month ? useCalcWeekAmountOfMonth(rentAmount) : rentAmount;
 
 	/// / Minimum membership base fee is £120
-	const baseFee = Math.max(rentAmount / divider, poundsToPence(MINIMUM_MEMBERSHIP_FEE));
-	return baseFee + calcVat(baseFee);
+	const baseFee = Math.max(amount, poundsToPence(MINIMUM_MEMBERSHIP_FEE));
+	return Math.trunc(baseFee + calcVat(baseFee)); // calc fee + VAT. Truncating for decimals
 }
 
 // example of app running
@@ -66,7 +67,7 @@ export function calculateMembershipFee(
 	console.log("5: Should return 150000p + VAT ->", run5);
 
 	const run6 = calculateMembershipFee(10000, RentPeriodEnum.Week, branchUnit2);
-	console.log("6: Should return minimum amount £120 + VAT ->", run6);
+	console.log("6: Should return minimum amount 12000p + VAT ->", run6);
 
 	try {
 		calculateMembershipFee(Number.MAX_SAFE_INTEGER, RentPeriodEnum.Week, branchUnit2); // will throw
