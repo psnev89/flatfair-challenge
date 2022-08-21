@@ -1,4 +1,3 @@
-// poundsToPence
 import {
 	poundsToPence,
 	penceToPounds,
@@ -7,6 +6,7 @@ import {
 	calcVat,
 	getDaysOfMonth
 } from "../src/helpers/utils";
+import { useCalcWeekAmountOfMonth } from "../src/composables/useCalcWeekAmountOfMonth";
 
 describe("HELPER UTILS :: poundsToPence", () => {
 	test("converting 2 should return 200", () => {
@@ -69,5 +69,13 @@ describe("HELPER UTILS :: getDaysOfMonth", () => {
 			getDaysOfMonth(2000);
 		};
 		expect(throwable).toThrow(RangeError);
+	});
+});
+
+describe("HELPER UTILS :: getWeekAmountFromMonth", () => {
+	test("should return correct value", () => {
+		expect(useCalcWeekAmountOfMonth(50_000, {month: 7, year: 2022})).toBe(11_290);
+		expect(useCalcWeekAmountOfMonth(28_000, {month: 1, year: 2022})).toBe(7_000);
+		expect(useCalcWeekAmountOfMonth(28_000, {month: 1, year: 2020})).toBe(6_758);
 	});
 });
