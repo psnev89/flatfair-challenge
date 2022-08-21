@@ -1,6 +1,12 @@
 import { RentPeriod, RentPeriodEnum } from "../types/rent.types";
 import { Pound, Pence } from "../types/shared.types";
-import { MONTH_MIN_RENT_AMOUNT_RANGE, MONTH_MAX_RENT_AMOUNT_RANGE, WEEK_MIN_RENT_AMOUNT_RANGE, WEEK_MAX_RENT_AMOUNT_RANGE, VAT } from "./constants";
+import {
+	MONTH_MIN_RENT_AMOUNT_RANGE,
+	MONTH_MAX_RENT_AMOUNT_RANGE,
+	WEEK_MIN_RENT_AMOUNT_RANGE,
+	WEEK_MAX_RENT_AMOUNT_RANGE,
+	VAT
+} from "./constants";
 
 /**
  * Helper function to convert pounds to pence.
@@ -11,7 +17,7 @@ import { MONTH_MIN_RENT_AMOUNT_RANGE, MONTH_MAX_RENT_AMOUNT_RANGE, WEEK_MIN_RENT
  * @returns {number} - Returns the amount of pence of the given pounds
  */
 export function poundsToPence(pounds: Pound): Pence {
-  return pounds * 100; // 1£ = 100p
+	return pounds * 100; // 1£ = 100p
 }
 
 /**
@@ -23,29 +29,29 @@ export function poundsToPence(pounds: Pound): Pence {
  * @returns {number} - Returns the amount of punds of the given pence
  */
 export function penceToPounds(pence: Pence): Pound {
-  return pence / 100; // 100p = 1£
+	return pence / 100; // 100p = 1£
 }
 
 /**
  * Helper function to get range of allowed rent amounts by rent period constraints.
  * @param period - Rent period to account the min and max values
- * @returns {Array<Pound>} Returns an array of min and max values in pounds 
+ * @returns {Array<Pound>} Returns an array of min and max values in pounds
  */
 export function getRentRangeByRentPeriod(period: RentPeriod): [Pound, Pound] {
-  let min;
-  let max;
-  switch (period) {
-    case RentPeriodEnum.Month:
-      min = MONTH_MIN_RENT_AMOUNT_RANGE;
-      max = MONTH_MAX_RENT_AMOUNT_RANGE;
-      break;
-    case RentPeriodEnum.Week:
-    default:
-      min = WEEK_MIN_RENT_AMOUNT_RANGE;
-      max = WEEK_MAX_RENT_AMOUNT_RANGE;
-      break;
-  }
-  return [min, max];
+	let min;
+	let max;
+	switch (period) {
+		case RentPeriodEnum.Month:
+			min = MONTH_MIN_RENT_AMOUNT_RANGE;
+			max = MONTH_MAX_RENT_AMOUNT_RANGE;
+			break;
+		case RentPeriodEnum.Week:
+		default:
+			min = WEEK_MIN_RENT_AMOUNT_RANGE;
+			max = WEEK_MAX_RENT_AMOUNT_RANGE;
+			break;
+	}
+	return [min, max];
 }
 
 /**
@@ -56,7 +62,7 @@ export function getRentRangeByRentPeriod(period: RentPeriod): [Pound, Pound] {
  * @returns {boolean} - Returns if the value is within the given range
  */
 export function isNumberBetween(value: number, min: number, max: number): boolean {
-  return min <= value && value <= max;
+	return min <= value && value <= max;
 }
 
 /**
@@ -66,5 +72,5 @@ export function isNumberBetween(value: number, min: number, max: number): boolea
  * @returns {Pound|Pence} - Returns VAT value
  */
 export function calcVat(amount: number, vat: number = VAT): number {
-  return amount * vat;
+	return amount * vat;
 }

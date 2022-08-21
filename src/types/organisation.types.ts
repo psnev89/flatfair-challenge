@@ -6,92 +6,97 @@
 import { Pence } from "./shared.types";
 
 const enum OrganisationUnitTypeEnum {
-  Branch = "branch",
-  Area = "area",
-  Division = "division"
-  // Client?
+	Branch = "branch",
+	Area = "area",
+	Division = "division"
+	// Client?
 }
 type OrganisationUnitType = `${OrganisationUnitTypeEnum}`;
 
 type OrganisationUnitConfig = {
-  hasFixedMembershipFee: boolean,
-  fixedMembershipFeeAmount: Pence
-}
+	hasFixedMembershipFee: boolean;
+	fixedMembershipFeeAmount: Pence;
+};
 
 export abstract class OrganisationUnit {
-  protected belongsTo!: OrganisationUnit | null;
-  protected config: OrganisationUnitConfig;
-  protected abstract unitType: OrganisationUnitType;
-  public name: string;
+	protected belongsTo!: OrganisationUnit | null;
 
-  constructor(name: string, hasFixedFee: boolean, fixedFeeAmount: Pence = 0) {
-    this.name = name;
-    this.config = {
-      hasFixedMembershipFee: hasFixedFee,
-      fixedMembershipFeeAmount: fixedFeeAmount
-    }
-  }
+	protected config: OrganisationUnitConfig;
 
-  public getBelongedUnit(): OrganisationUnit | null {
-    return this.belongsTo;
-  }
+	protected abstract unitType: OrganisationUnitType;
 
-  public detachBelongedUnit(): void {
-    this.belongsTo = null;
-  }
+	public name: string;
 
-  abstract attachBelongedUnit(unit: OrganisationUnit): void
+	constructor(name: string, hasFixedFee: boolean, fixedFeeAmount: Pence = 0) {
+		this.name = name;
+		this.config = {
+			hasFixedMembershipFee: hasFixedFee,
+			fixedMembershipFeeAmount: fixedFeeAmount
+		};
+	}
 
-  public getFixedMembershipFee(): Pence | null {
-    if (this.config.hasFixedMembershipFee) return this.config.fixedMembershipFeeAmount;
-    return this.belongsTo?.getFixedMembershipFee?.() ?? null;
-  }
+	public getBelongedUnit(): OrganisationUnit | null {
+		return this.belongsTo;
+	}
+
+	public detachBelongedUnit(): void {
+		this.belongsTo = null;
+	}
+
+	abstract attachBelongedUnit(unit: OrganisationUnit): void;
+
+	public getFixedMembershipFee(): Pence | null {
+		if (this.config.hasFixedMembershipFee) return this.config.fixedMembershipFeeAmount;
+		return this.belongsTo?.getFixedMembershipFee?.() ?? null;
+	}
 }
 
 export class BranchUnit extends OrganisationUnit {
-  protected unitType: OrganisationUnitType = OrganisationUnitTypeEnum.Branch;
+	protected unitType: OrganisationUnitType = OrganisationUnitTypeEnum.Branch;
 
-  public attachBelongedUnit(unit: AreaUnit): void {
-    this.belongsTo = unit;
-  }
+	public attachBelongedUnit(unit: AreaUnit): void {
+		this.belongsTo = unit;
+	}
 }
 
 export class AreaUnit extends OrganisationUnit {
-  protected units: BranchUnit[] = [];
-  protected unitType: OrganisationUnitType = OrganisationUnitTypeEnum.Area;
+	protected units: BranchUnit[] = [];
 
-  public attachBelongedUnit(unit: DivisionUnit): void {
-    this.belongsTo = unit;
-  }
+	protected unitType: OrganisationUnitType = OrganisationUnitTypeEnum.Area;
 
-  public addUnit(unit: BranchUnit): void {
-    this.units.push(unit);
-    unit.attachBelongedUnit(this);
-  }
+	public attachBelongedUnit(unit: DivisionUnit): void {
+		this.belongsTo = unit;
+	}
 
-  public removeUnit(unit: BranchUnit): void {
-    const indexToRemove = this.units.indexOf(unit);
-    this.units.splice(indexToRemove, 1);
-    unit.detachBelongedUnit();
-  }
+	public addUnit(unit: BranchUnit): void {
+		this.units.push(unit);
+		unit.attachBelongedUnit(this);
+	}
+
+	public removeUnit(unit: BranchUnit): void {
+		const indexToRemove = this.units.indexOf(unit);
+		this.units.splice(indexToRemove, 1);
+		unit.detachBelongedUnit();
+	}
 }
 
 export class DivisionUnit extends OrganisationUnit {
-  protected units: AreaUnit[] = [];
-  protected unitType: OrganisationUnitType = OrganisationUnitTypeEnum.Division;
+	protected units: AreaUnit[] = [];
 
-  public attachBelongedUnit(): void {
-    throw new TypeError("Division unit does not have a parent unit");
-  }
+	protected unitType: OrganisationUnitType = OrganisationUnitTypeEnum.Division;
 
-  public addUnit(unit: AreaUnit): void {
-    this.units.push(unit);
-    unit.attachBelongedUnit(this);
-  }
+	public attachBelongedUnit(): void {
+		throw new TypeError("Division unit does not have a parent unit");
+	}
 
-  public removeUnit(unit: AreaUnit): void {
-    const indexToRemove = this.units.indexOf(unit);
-    this.units.splice(indexToRemove, 1);
-    unit.detachBelongedUnit();
-  }
+	public addUnit(unit: AreaUnit): void {
+		this.units.push(unit);
+		unit.attachBelongedUnit(this);
+	}
+
+	public removeUnit(unit: AreaUnit): void {
+		const indexToRemove = this.units.indexOf(unit);
+		this.units.splice(indexToRemove, 1);
+		unit.detachBelongedUnit();
+	}
 }
