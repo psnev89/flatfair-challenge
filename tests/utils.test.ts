@@ -1,5 +1,12 @@
-// poundsToPence
-import { poundsToPence, penceToPounds, getRentRangeByRentPeriod, isNumberBetween, calcVat } from "../src/helpers/utils";
+import {
+	poundsToPence,
+	penceToPounds,
+	getRentRangeByRentPeriod,
+	isNumberBetween,
+	calcVat,
+	getDaysOfMonth
+} from "../src/helpers/utils";
+import { useCalcWeekAmountOfMonth } from "../src/composables/useCalcWeekAmountOfMonth";
 
 describe("HELPER UTILS :: poundsToPence", () => {
 	test("converting 2 should return 200", () => {
@@ -47,5 +54,28 @@ describe("HELPER UTILS :: calcVat", () => {
 	});
 	test("100 should return 23 with 0.23 VAT", () => {
 		expect(calcVat(100, 0.23)).toBe(23);
+	});
+});
+
+describe("HELPER UTILS :: getDaysOfMonth", () => {
+	test("should return the correct days of month", () => {
+		expect(getDaysOfMonth(0)).toBe(31);
+		expect(getDaysOfMonth(1)).toBe(28);
+		expect(getDaysOfMonth(1, 2020)).toBe(29);
+		expect(getDaysOfMonth(11)).toBe(31);
+	});
+	test("should throw on invalid input", () => {
+		const throwable = () => {
+			getDaysOfMonth(2000);
+		};
+		expect(throwable).toThrow(RangeError);
+	});
+});
+
+describe("HELPER UTILS :: getWeekAmountFromMonth", () => {
+	test("should return correct value", () => {
+		expect(useCalcWeekAmountOfMonth(50_000, {month: 7, year: 2022})).toBe(11_290);
+		expect(useCalcWeekAmountOfMonth(28_000, {month: 1, year: 2022})).toBe(7_000);
+		expect(useCalcWeekAmountOfMonth(28_000, {month: 1, year: 2020})).toBe(6_758);
 	});
 });

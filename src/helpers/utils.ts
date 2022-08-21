@@ -69,8 +69,22 @@ export function isNumberBetween(value: number, min: number, max: number): boolea
  * Helper function to get the VAT value of a given amount
  * @param amount - amount to get the VAT from
  * @param vat - VAT to be applied
- * @returns {Pound|Pence} - Returns VAT value
+ * @returns {number} - Returns VAT value
  */
 export function calcVat(amount: number, vat: number = VAT): number {
 	return amount * vat;
+}
+
+/**
+ * Helper function to get the number of days of a given month
+ * @param month - month index 0 based. January is 0, December is 11
+ * @param year - year to calculate the days for. Just for February.
+ * @returns {number} - Returns the number of days
+ */
+export function getDaysOfMonth(month: number = new Date().getMonth(), year: number = new Date().getFullYear()) {
+	if (!isNumberBetween(month, 0, 11))
+		throw new RangeError(`Month input is not valid. Expected [0 ~ 11] got ${month}`);
+
+	// it will return the last day of the previous month so by giving month + 1 will return the current month's last day
+	return new Date(year, month + 1, 0).getDate();
 }
