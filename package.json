@@ -10,17 +10,17 @@
     "start": "tsc && node dist/index.js",
     "test": "npx jest",
     "tdd": "npx jest --watch",
-    "prettier:check": "npx prettier --check .",
-    "prettier:write": "npx prettier --write ."
+    "prettier": "prettier --check './**/*.{js,ts,css,json}' --config ./.prettierrc",
+    "prettier:fix": "prettier --write './**/*.{js,ts,css,json}' --config ./.prettierrc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/jest": "^28.1.6",
-    "jest": "^28.1.3",
+    "@types/jest": "28.1.6",
+    "jest": "28.1.3",
     "prettier": "2.7.1",
-    "ts-jest": "^28.0.7",
-    "typescript": "^4.7.4"
+    "ts-jest": "28.0.7",
+    "typescript": "4.7.4"
   }
 }
