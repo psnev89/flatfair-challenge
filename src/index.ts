@@ -2,7 +2,7 @@ import { useCalcWeekAmountOfMonth } from "./composables/useCalcWeekAmountOfMonth
 import { MINIMUM_MEMBERSHIP_FEE } from "./helpers/constants";
 import { calcVat, poundsToPence } from "./helpers/utils";
 import { validateRentAmount } from "./helpers/validations";
-import { BranchUnit, AreaUnit, DivisionUnit, OrganisationUnit } from "./types/organisation.types";
+import { BranchUnit, AreaUnit, DivisionUnit } from "./types/organisation.types";
 import { RentPeriod, RentPeriodEnum } from "./types/rent.types";
 import { Pence, MembershipFee } from "./types/shared.types";
 
@@ -11,16 +11,16 @@ import { Pence, MembershipFee } from "./types/shared.types";
  * @param rentAmount - Rent amount. from 1 to Number.MAX_SAFE_INTEGER
  * @param rentPeriod - Rent period. Can be one of: [week, month]
  * @param organisationUnit  - Branch
- * @returns
+ * @returns Membership fee
  */
 export function calculateMembershipFee(
 	rentAmount: Pence,
 	rentPeriod: RentPeriod,
-	organisationUnit: OrganisationUnit
+	branchUnit: BranchUnit
 ): MembershipFee {
 	// Membership fee calculation
 	/// / check if org structure has fixed fee
-	const fixedUnitFee = organisationUnit.getFixedMembershipFee();
+	const fixedUnitFee = branchUnit.getFixedMembershipFee();
 	if (fixedUnitFee != null) return fixedUnitFee;
 
 	const [error] = validateRentAmount(rentAmount, rentPeriod); // Validate rentAmount by rentPeriod
